@@ -12,5 +12,9 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('admin');
 });
+
+
+Route::get('wp/posts/list', 'WPPostController@show');
+Route::get('fs/posts/list', 'FSPostController@show');
