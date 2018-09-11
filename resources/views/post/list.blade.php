@@ -18,6 +18,10 @@
 
 </style>
 
+
+
+<button type="button" id="importFromWP" class="btn btn-block btn-primary">Import</button>
+
 <table class="table table-bordered">
     <tbody>
     <tr>
@@ -52,5 +56,19 @@
 @stop
 
 @section('js')
-    <script> console.log('Hi!'); </script>
+    <script> 
+      
+      $("#importFromWP").click(function() {
+        
+        $.ajax({
+          url: "import",
+          context: document.body
+        }).done(function() {
+          alert("Imported");
+        });
+        
+        
+      });
+  
+    </script>
 @stop

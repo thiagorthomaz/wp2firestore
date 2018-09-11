@@ -18,3 +18,5 @@ Route::get('/', function () {
 
 Route::get('wp/posts/list', 'WPPostController@show');
 Route::get('fs/posts/list', 'FSPostController@show');
+
+Route::get('wp/posts/import/', 'WPPostController@import');

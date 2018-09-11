@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
-
 use App\Http\Controllers\Controller;
 
-use Google\Cloud\Firestore\FirestoreClient;
-
+use App\Providers\PostServiceProvider;
 
 class FSPostController extends Controller
 {
@@ -15,20 +13,13 @@ class FSPostController extends Controller
     public static function show()
     {
 
-        $firestore = new FirestoreClient();
-
-        $collectionReference = $firestore->collection('noticias');
+      $post_provider = new PostServiceProvider();
+      $post_provider->loadFromFireStore("posts");
+      
+      
+      
+      exit;
         
-        $documents = $collectionReference->documents();
-
-
-        foreach($documents as $document) {
-
-            if ($document->exists()) {
-                print_r($document['data']);
-            }
-
-        }
 
         //print_r($documents);
 
