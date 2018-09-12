@@ -19,8 +19,10 @@
 </style>
 
 
+@if ($post_type === "wordpress")
+  <button type="button" id="importFromWP" class="btn btn-block btn-primary">Import</button>
+@endif
 
-<button type="button" id="importFromWP" class="btn btn-block btn-primary">Import</button>
 
 <table class="table table-bordered">
     <tbody>

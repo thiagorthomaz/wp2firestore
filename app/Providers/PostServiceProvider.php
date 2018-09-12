@@ -28,11 +28,17 @@ class PostServiceProvider {
     foreach($documents as $document) {
 
       if ($document->exists()) {        
-        $post_list[] = new Post($document['post'], $document['imagem'],$document['title'],$document['sub_title'], $document['post_link']);
+        $post['ID'] = $document['ID'];
+        $post['post_title'] = $document['post_title'];
+        $post['post_status'] = $document['post_status'];
+        $post['post_date'] = $document['post_date'];
+        $post['post_modified'] = $document['post_modified'];
+        
+        $post_list[] = (object)$post;
       }
 
     }    
-    print_r($post_list);exit;
+    
     return $post_list;
 
   }

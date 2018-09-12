@@ -14,17 +14,15 @@ class FSPostController extends Controller
     {
 
       $post_provider = new PostServiceProvider();
-      $post_provider->loadFromFireStore("posts");
+      $posts = $post_provider->loadFromFireStore("posts");
       
-      
-      
-      exit;
-        
-
-        //print_r($documents);
-
-        exit;
-        $posts = DB::select('select * from wp_posts where post_type="post"');
-        return view('posts', ['posts' => $posts]);
+      return view(
+        'post/list', 
+        [
+            'posts' => $posts,
+            'post_type' => 'firestore',
+            'title' => 'Posts Firestore'
+        ]
+      );
     }
 }

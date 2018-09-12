@@ -18,6 +18,7 @@ class WPPostController extends Controller
           'post/list', 
           [
               'posts' => $posts,
+              'post_type' => 'wordpress',
               'title' => 'Posts Wordpress'
           ]
 
