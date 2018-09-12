@@ -48,11 +48,14 @@ class PostServiceProvider {
   public function importFromWordPress() {
     
     $posts = $this->loadFromWordPress();
+    $firestore = new FirestoreClient();
+    $collectionReference = $firestore->collection("posts");
+    
+    foreach ($posts as $post) {
+      $documentReference = $collectionReference->newDocument();
+      $documentReference->set((array)$post);
+    }
 
-    
-    
-    
-    
   }  
   
   

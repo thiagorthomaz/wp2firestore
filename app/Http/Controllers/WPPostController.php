@@ -27,6 +27,10 @@ class WPPostController extends Controller
     public static function import()
     {
      
+      $post_provider = new PostServiceProvider();
+      $post_provider->importFromWordPress();
+      
+      
       
       echo json_encode(array("response" => "imported"));
     }
