@@ -24,13 +24,24 @@
 @endif
 
 
+@if ($post_type === "wordpress")
+<div class="post-categories">
+    @foreach ($categories as $cat)
+      <div class="checkout">
+        <input name="{{ $cat->term_taxonomy_id }}" type="checkbox"> {{ $cat->name }}
+      </div>
+      
+    @endforeach
+</div>
+@endif
+
 <table class="table table-bordered">
     <tbody>
     <tr>
       <th style="width: 10px">#</th>
       <th>Title</th>
       <th>Status</th>
-      <th>imported</th>
+      <th>Imported</th>
       <th>Modified</th> 
     </tr>
 
@@ -54,7 +65,21 @@
 @stop
 
 @section('css')
-    <link rel="stylesheet" href="/css/admin_custom.css">
+  <style>
+    .post-categories {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+    
+    .checkout {
+      display: flex;
+      flex-direction: row;
+      margin: 5px;
+    }
+    
+  </style>
 @stop
 
 @section('js')

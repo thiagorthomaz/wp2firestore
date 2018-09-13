@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Providers\PostServiceProvider;
+use App\Providers\TaxonomyServiceprovider;
 
 class WPPostController extends Controller
 {
@@ -12,12 +13,16 @@ class WPPostController extends Controller
     {
         
       $post_provider = new PostServiceProvider();
+      $taxonomy_provider = new TaxonomyServiceprovider();
+      
       $posts = $post_provider->loadFromWordPress();
-
+      $categories = $taxonomy_provider->loadCategoriesFromWP();
+      
       return view(
           'post/list', 
           [
               'posts' => $posts,
+              'categories' => $categories,
               'post_type' => 'wordpress',
               'title' => 'Posts Wordpress'
           ]

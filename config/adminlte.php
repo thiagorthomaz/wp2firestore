@@ -118,7 +118,6 @@ return [
             'text'        => 'Posts',
             'url'         => 'wp/posts/list',
             'icon'        => 'file',
-            'label'       => 4,
             'label_color' => 'success',
         ],
         'Firestore',
