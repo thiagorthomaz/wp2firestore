@@ -3,8 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Support\Facades\DB;
-
 use Google\Cloud\Firestore\FirestoreClient;
+use App\Models\WFPost;
+
 
 /**
  * Description of PostServiceProvider
@@ -13,8 +14,14 @@ use Google\Cloud\Firestore\FirestoreClient;
  */
 class PostServiceProvider {
  
-  
-  
+  public function loadImportedPosts() {
+    
+    $posts = \App\Models\WFPost::all();
+    
+    
+  }
+
+
   public function loadFromFireStore($collection) {
     
     $post_list = array();
@@ -44,22 +51,36 @@ class PostServiceProvider {
   }
   
   public function loadFromWordPress() {
-    
+       
     $posts = DB::select('select * from wp_posts where post_type="post"');
     return $posts;
 
   }
   
+  public function loadNotImportedFromWordPress() {
+       
+    $posts = DB::select('select * from wp_posts where post_type="post" and ID not in (SELECT post_id FROM wf_posts)');
+    return $posts;
+
+  }
 
   public function importFromWordPress() {
     
-    $posts = $this->loadFromWordPress();
+    $posts = $this->loadNotImportedFromWordPress();
+
     $firestore = new FirestoreClient();
     $collectionReference = $firestore->collection("posts");
     
     foreach ($posts as $post) {
+      $wf_post = new WFPost();
+      $wf_post->post_id = $post->ID;
+      $wf_post->created_at = date("Y-m-d H:i:s");
+      $wf_post->updated_at = date("Y-m-d H:i:s");
+      $wf_post->save();
+
       $documentReference = $collectionReference->newDocument();
       $documentReference->set((array)$post);
+
     }
 
   }  
