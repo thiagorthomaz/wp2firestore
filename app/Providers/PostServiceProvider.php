@@ -61,9 +61,46 @@ class PostServiceProvider {
 
   }
   
-  public function loadNotImportedFromWordPress() {
+  public function loadFromWordPressByCategory($categoryID) {
        
-    $posts = DB::select('select * from wp_posts where post_type="post" and ID not in (SELECT post_id FROM wf_posts)');
+    $posts = DB::select('SELECT wp.*, wf.* FROM wp_term_relationships wtr
+    join wp_terms wt
+      on wtr.term_taxonomy_id = wt.term_id
+    join wp_posts wp
+      on wp.ID = wtr.object_id
+    left join wf_posts wf
+        on wf.post_id = wp.ID
+    where wt.term_id = ?', [$categoryID]);
+    
+    
+    return $posts;
+
+  }
+  
+  public function loadNotImportedFromWordPress($categoryID = null) {
+    
+    if (is_null($categoryID)) {
+      $posts = DB::select('SELECT wp.* FROM wp_term_relationships wtr
+      join wf_categories wfc
+        on wfc.id = wtr.term_taxonomy_id
+      join wp_terms wt
+          on wtr.term_taxonomy_id = wt.term_id
+      join wp_posts wp
+          on wp.ID = wtr.object_id
+      where wp.ID not in (SELECT post_id FROM wf_posts) and wp.post_type="post"');  
+    } else {
+      $posts = DB::select('SELECT wp.* FROM wp_term_relationships wtr
+      join wf_categories wfc
+        on wfc.id = wtr.term_taxonomy_id
+      join wp_terms wt
+          on wtr.term_taxonomy_id = wt.term_id
+      join wp_posts wp
+          on wp.ID = wtr.object_id
+      where wp.ID not in (SELECT post_id FROM wf_posts) and wp.post_type="post"
+      and wt.term_id = ?', [$categoryID]);  
+    }
+    
+    
     return $posts;
 
   }

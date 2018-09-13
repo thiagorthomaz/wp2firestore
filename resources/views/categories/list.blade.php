@@ -36,7 +36,9 @@
               <input id="{{ $cat->term_taxonomy_id }}" name="{{ $cat->term_taxonomy_id }}" class="categoryToImport" type="checkbox">  
             @endif
           </td>
-          <td> <label for="{{ $cat->term_taxonomy_id }}">{{ $cat->name }}</label> </td>
+          <td> <label for="{{ $cat->term_taxonomy_id }}">
+              <a href="{{ url('/wp/posts/list') }}/{{$cat->term_taxonomy_id}}">{{ $cat->name }}</a>
+            </label> </td>
         </tr>
     @endforeach
     

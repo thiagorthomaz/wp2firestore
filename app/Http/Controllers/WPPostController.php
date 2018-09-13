@@ -9,13 +9,18 @@ use App\Providers\TaxonomyServiceprovider;
 class WPPostController extends Controller
 {
 
-    public static function show()
+    public static function show($categoryId = null)
     {
-        
+      
       $post_provider = new PostServiceProvider();
       $taxonomy_provider = new TaxonomyServiceprovider();
       
-      $posts = $post_provider->loadFromWordPress();
+      if (is_null($categoryId)) {
+        $posts = $post_provider->loadFromWordPress();  
+      } else {
+        $posts = $post_provider->loadFromWordPressByCategory($categoryId);        
+      }
+      
       $categories = $taxonomy_provider->loadCategoriesFromWP();
       
       return view(
@@ -32,13 +37,8 @@ class WPPostController extends Controller
     
     public static function import()
     {
-     
-      
       $post_provider = new PostServiceProvider();
       $post_provider->importFromWordPress();
-      
-      
-      
       echo json_encode(array("response" => "imported"));
     }
     
