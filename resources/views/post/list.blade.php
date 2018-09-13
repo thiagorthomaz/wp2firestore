@@ -41,8 +41,8 @@
       <th style="width: 10px">#</th>
       <th>Title</th>
       <th>Status</th>
-      <th>Imported</th>
-      <th>Modified</th> 
+      <th>Imported at</th>
+      <th>Post last modified at</th> 
     </tr>
 
 
@@ -52,7 +52,7 @@
             <td> {{ $post->ID }} </td>
             <td> {{ $post->post_title }} </td>
             <td> {{ $post->post_status }} </td>
-            <td> Y/N </td>
+            <td> {{ $post->created_at }} </td>
             <td> {{ $post->post_modified }} </td>
         </tr>
     @endforeach

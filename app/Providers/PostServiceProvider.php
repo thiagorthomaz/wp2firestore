@@ -52,7 +52,11 @@ class PostServiceProvider {
   
   public function loadFromWordPress() {
        
-    $posts = DB::select('select * from wp_posts where post_type="post"');
+    $posts = DB::select('select * from wp_posts wp
+    left join wf_posts wf
+        on wf.post_id = wp.ID
+    where wp.post_type="post"');
+    
     return $posts;
 
   }
