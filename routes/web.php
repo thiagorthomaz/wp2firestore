@@ -15,8 +15,17 @@ Route::get('/', function () {
     return view('admin');
 });
 
-
+/********************************
+ * WORDPRESS
+ *******************************/
 Route::get('wp/posts/list', 'WPPostController@show');
+Route::get('wp/posts/import/', 'WPPostController@import');
+Route::get('wp/categories/list', 'WPCategoriesController@show');
+Route::get('wp/categories/import/{categoryId}', 'WPCategoriesController@import');
+
+/********************************
+ * FIRESTORE
+ *******************************/
 Route::get('fs/posts/list', 'FSPostController@show');
 
-Route::get('wp/posts/import/', 'WPPostController@import');
+

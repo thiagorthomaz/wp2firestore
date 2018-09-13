@@ -120,6 +120,12 @@ return [
             'icon'        => 'file',
             'label_color' => 'success',
         ],
+        [
+            'text'        => 'Categories',
+            'url'         => 'wp/categories/list',
+            'icon'        => 'file',
+            'label_color' => 'success',
+        ],
         'Firestore',
         [
             'text' => 'Posts',
