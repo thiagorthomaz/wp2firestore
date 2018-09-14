@@ -126,6 +126,12 @@ return [
             'icon'        => 'file',
             'label_color' => 'success',
         ],
+        [
+            'text'        => 'Admin',
+            'url'         => 'wp/admin',
+            'icon'        => 'file',
+            'label_color' => 'success',
+        ],
         'Firestore',
         [
             'text' => 'Posts',
