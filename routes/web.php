@@ -18,6 +18,7 @@ Route::get('/', function () {
 /********************************
  * WORDPRESS
  *******************************/
+Route::get('/', 'WPAdminController@show');
 Route::get('wp/admin', 'WPAdminController@show');
 Route::get('wp/posts/list/{categoryId?}', 'WPPostController@show');
 Route::get('wp/posts/import/', 'WPPostController@import');

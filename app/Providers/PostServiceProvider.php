@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\Facades\DB;
 use Google\Cloud\Firestore\FirestoreClient;
 use App\Models\WFPost;
+use App\Providers\TaxonomyServiceprovider;
 
 
 /**
@@ -81,7 +82,7 @@ class PostServiceProvider {
   public function loadNotImportedFromWordPress($categoryID = null) {
     
     if (is_null($categoryID)) {
-      $posts = DB::select('SELECT wp.* FROM wp_term_relationships wtr
+      $posts = DB::select('SELECT distinct wp.* FROM wp_term_relationships wtr
       join wf_categories wfc
         on wfc.id = wtr.term_taxonomy_id
       join wp_terms wt
@@ -90,7 +91,7 @@ class PostServiceProvider {
           on wp.ID = wtr.object_id
       where wp.ID not in (SELECT post_id FROM wf_posts) and wp.post_type="post"');  
     } else {
-      $posts = DB::select('SELECT wp.* FROM wp_term_relationships wtr
+      $posts = DB::select('SELECT distinct wp.* FROM wp_term_relationships wtr
       join wf_categories wfc
         on wfc.id = wtr.term_taxonomy_id
       join wp_terms wt
@@ -108,8 +109,15 @@ class PostServiceProvider {
 
   public function importFromWordPress() {
     
-    $posts = $this->loadNotImportedFromWordPress();
-
+    $taxonomy = new TaxonomyServiceprovider();
+    $categories = $taxonomy->loadCategoriesToImport();
+    $posts = array();
+    
+    foreach ($categories as $cat) {
+      $posts_to_import = $this->loadNotImportedFromWordPress($cat->id);
+      $posts = array_merge($posts, $posts_to_import);
+    }
+    
     $firestore = new FirestoreClient();
     $collectionReference = $firestore->collection("posts");
     
@@ -121,12 +129,34 @@ class PostServiceProvider {
       $wf_post->save();
 
       $post->created_at = date("Y-m-d H:i:s");
+      $post->featured_image = $this->loadFeaturedImage($post->ID);
       $documentReference = $collectionReference->newDocument();
       $documentReference->set((array)$post);
 
     }
 
-  }  
+  }
+  
+  public function loadFeaturedImage($post_id) {
+    
+    $result = DB::select("SELECT concat((select option_value from wp_options where option_name ='siteurl'  limit 1),'/wp-content/uploads/', wpm2.meta_value) as image_path
+    FROM wp_posts wp
+        INNER JOIN wp_postmeta wpm
+            ON (wp.ID = wpm.post_id AND wpm.meta_key = '_thumbnail_id')
+        INNER JOIN wp_postmeta wpm2
+            ON (wpm.meta_value = wpm2.post_id AND wpm2.meta_key = '_wp_attached_file')
+    where wp.ID = ?",
+    [$post_id]);
+
+    $image_path = "";
+    if (isset($result[0])) {
+      $image_path = $result[0]->image_path;
+      
+    }
+    
+    return $image_path;
+    
+  }
   
   
   

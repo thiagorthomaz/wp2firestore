@@ -48,7 +48,7 @@ class TaxonomyServiceprovider {
   }
   
   public function loadCategoriesToImport() {
-    return DB::select('SELECT * from wf_categories');
+    return DB::select('SELECT * from wf_categories where deleted_at is null');
   }
   
   
