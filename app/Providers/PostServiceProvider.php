@@ -56,7 +56,7 @@ class PostServiceProvider {
        
     $posts = DB::select('select * from wp_posts wp
     left join wf_posts wf
-        on wf.post_id = wp.ID
+        on wf.id = wp.ID
     where wp.post_type="post"');
     
     return $posts;
@@ -71,7 +71,7 @@ class PostServiceProvider {
     join wp_posts wp
       on wp.ID = wtr.object_id
     left join wf_posts wf
-        on wf.post_id = wp.ID
+        on wf.id = wp.ID
     where wt.term_id = ?', [$categoryID]);
     
     
@@ -89,7 +89,7 @@ class PostServiceProvider {
           on wtr.term_taxonomy_id = wt.term_id
       join wp_posts wp
           on wp.ID = wtr.object_id
-      where wp.ID not in (SELECT post_id FROM wf_posts) and wp.post_type="post"');  
+      where wp.ID not in (SELECT id FROM wf_posts) and wp.post_type="post"');  
     } else {
       $posts = DB::select('SELECT distinct wp.* FROM wp_term_relationships wtr
       join wf_categories wfc
@@ -98,7 +98,7 @@ class PostServiceProvider {
           on wtr.term_taxonomy_id = wt.term_id
       join wp_posts wp
           on wp.ID = wtr.object_id
-      where wp.ID not in (SELECT post_id FROM wf_posts) and wp.post_type="post"
+      where wp.ID not in (SELECT id FROM wf_posts) and wp.post_type="post"
       and wt.term_id = ?', [$categoryID]);  
     }
     
@@ -118,21 +118,8 @@ class PostServiceProvider {
       $posts = array_merge($posts, $posts_to_import);
     }
     
-    $firestore = new FirestoreClient();
-    $collectionReference = $firestore->collection("posts");
-    
     foreach ($posts as $post) {
-      $wf_post = new WFPost();
-      $wf_post->post_id = $post->ID;
-      $wf_post->created_at = date("Y-m-d H:i:s");
-      $wf_post->updated_at = date("Y-m-d H:i:s");
-      $wf_post->save();
-
-      $post->created_at = date("Y-m-d H:i:s");
-      $post->featured_image = $this->loadFeaturedImage($post->ID);
-      $documentReference = $collectionReference->newDocument();
-      $documentReference->set((array)$post);
-
+      $this->sendFromWP2FS($post);
     }
 
   }
@@ -158,6 +145,46 @@ class PostServiceProvider {
     
   }
   
+  public function updateFromWordPress() {
+    $posts = DB::select("SELECT * FROM wp2firestore.wf_posts wfp
+            join wp_posts wp
+                on wp.ID = wfp.id
+            where wp.post_modified > wfp.updated_at");
+    
+    foreach ($posts as $post) {
+      $this->sendFromWP2FS($post);
+    }
+
+  }
+  
+  private function sendFromWP2FS($post){
+      
+    $firestore = new FirestoreClient();
+    $collectionReference = $firestore->collection("posts");
+    
+    $wf_post = new WFPost();
+    $wf_post->id = $post->ID;
+    $wf_post->created_at = $post->post_date;
+    $wf_post->updated_at = $post->post_modified;
+    $wf_post->save();
+
+    $post->created_at = date("Y-m-d H:i:s");
+    $post->featured_image = $this->loadFeaturedImage($post->ID);
+    $documentReference = $collectionReference->document( $post->ID);
+    $documentReference->set((array)$post);
+    
+  }
+  
+  public function delete($post_id){
+   
+    $post = \App\Models\WFPost::find($post_id);
+    $post->deleted_at = date("Y-m-d H:i:s");
+    
+    $firestore = new FirestoreClient();
+    $collectionReference = $firestore->collection("posts")->document($post_id)->delete();
+    $post->save();
+    
+  }
   
   
 }

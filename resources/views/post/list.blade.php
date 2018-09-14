@@ -30,8 +30,10 @@
       <th style="width: 10px">#</th>
       <th>Title</th>
       <th>Status</th>
+      <th>Posted in</th>
       <th>Imported at</th>
       <th>Post last modified at</th> 
+      <th></th> 
     </tr>
 
 
@@ -41,8 +43,14 @@
             <td> {{ $post->ID }} </td>
             <td> {{ $post->post_title }} </td>
             <td> {{ $post->post_status }} </td>
+            <td> {{ $post->post_date }} </td>
             <td> {{ $post->created_at }} </td>
             <td> {{ $post->post_modified }} </td>
+            <td> 
+              @if ($post_type === "firestore")
+              <button id="deleteFromFS" onclick="deletePost({{ $post->ID }})" class="btn btn-block btn-danger">Delete</button>
+              @endif
+            </td>
         </tr>
     @endforeach
     
@@ -66,8 +74,19 @@
           alert("Imported");
         });
         
-        
       });
-  
+      
+      function deletePost(_post_id_) {
+        
+        $.ajax({
+          url: "delete/"+_post_id_,
+          context: document.body
+        }).done(function() {
+          alert("Deleted");
+          location.reload();
+        });
+        
+      }
+      
     </script>
 @stop

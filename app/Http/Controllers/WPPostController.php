@@ -42,4 +42,13 @@ class WPPostController extends Controller
       echo json_encode(array("response" => "imported"));
     }
     
+    public static function update()
+    {
+      $post_provider = new PostServiceProvider();
+      $post_provider->updateFromWordPress();
+      echo json_encode(array("response" => "updated"));
+
+    }
+    
+    
 }

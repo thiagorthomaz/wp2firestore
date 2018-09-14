@@ -22,6 +22,7 @@ Route::get('/', 'WPAdminController@show');
 Route::get('wp/admin', 'WPAdminController@show');
 Route::get('wp/posts/list/{categoryId?}', 'WPPostController@show');
 Route::get('wp/posts/import/', 'WPPostController@import');
+Route::get('wp/posts/update/', 'WPPostController@update');
 Route::get('wp/categories/list', 'WPCategoriesController@show');
 Route::get('wp/categories/import/{categoryId}', 'WPCategoriesController@import');
 
@@ -29,5 +30,5 @@ Route::get('wp/categories/import/{categoryId}', 'WPCategoriesController@import')
  * FIRESTORE
  *******************************/
 Route::get('fs/posts/list', 'FSPostController@show');
-
+Route::get('fs/posts/delete/{postId}', 'FSPostController@delete');
 
