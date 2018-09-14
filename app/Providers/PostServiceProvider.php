@@ -40,6 +40,7 @@ class PostServiceProvider {
         $post['post_status'] = $document['post_status'];
         $post['post_date'] = $document['post_date'];
         $post['post_modified'] = $document['post_modified'];
+        $post['created_at'] = $document['created_at'];
         
         $post_list[] = (object)$post;
       }
@@ -119,6 +120,7 @@ class PostServiceProvider {
       $wf_post->updated_at = date("Y-m-d H:i:s");
       $wf_post->save();
 
+      $post->created_at = date("Y-m-d H:i:s");
       $documentReference = $collectionReference->newDocument();
       $documentReference->set((array)$post);
 
