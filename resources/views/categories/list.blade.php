@@ -31,9 +31,9 @@
         <tr>
           <td> 
             @if ($cat->checked > 0)
-              <input id="{{ $cat->term_taxonomy_id }}" name="{{ $cat->term_taxonomy_id }}" checked="1" class="categoryToImport" type="checkbox">  
+              <input id="{{ $cat->term_id }}" name="{{ $cat->term_id }}" checked="1" class="categoryToImport" type="checkbox">  
             @else
-              <input id="{{ $cat->term_taxonomy_id }}" name="{{ $cat->term_taxonomy_id }}" class="categoryToImport" type="checkbox">  
+              <input id="{{ $cat->term_id }}" name="{{ $cat->term_id }}" class="categoryToImport" type="checkbox">  
             @endif
           </td>
           <td> <label for="{{ $cat->term_taxonomy_id }}">

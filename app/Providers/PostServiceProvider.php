@@ -54,10 +54,14 @@ class PostServiceProvider {
   
   public function loadFromWordPress() {
        
-    $posts = DB::select('select * from wp_posts wp
+    $posts = DB::select('SELECT wp.*, wf.* FROM wp_term_relationships wtr
+    join wp_terms wt
+      on wtr.term_taxonomy_id = wt.term_id
+    join wp_posts wp
+      on wp.ID = wtr.object_id
     left join wf_posts wf
         on wf.id = wp.ID
-    where wp.post_type="post"');
+    where post_status="publish" and wt.term_id in (select wc.id from wf_categories wc)');
     
     return $posts;
 

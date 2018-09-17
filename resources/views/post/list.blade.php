@@ -23,6 +23,13 @@
   <button type="button" id="importFromWP" class="btn btn-block btn-primary">Import</button>
 @endif
 
+@if (count($posts) == 0)
+<div class="callout callout-warning">
+  <h4>Hey!!!</h4>
+
+  <p><a href="{{ url('wp/categories/list') }}">Take a look if there's some category selected</a></p>
+</div>
+@endif
 
 <table class="table table-bordered">
     <tbody>
