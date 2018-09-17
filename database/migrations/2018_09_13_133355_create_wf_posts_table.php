@@ -14,6 +14,7 @@ class CreateWFPostsTable extends Migration
     public function up()
     {
         Schema::create('wf_posts', function (Blueprint $table) {
+          $table->integer('id');
           $table->primary('id');
           $table->timestamps();
         });

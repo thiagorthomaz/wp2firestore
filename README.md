@@ -6,20 +6,33 @@ My goal here is to create a middleware to publish my wordpress posts into a Fire
 
 ## Dependencies
 
+### PHP
 sudo apt-get install php-dev php-pear phpunit
 
-sudo apt-get install g++
-sudo apt-get install libz-dev
-sudo apt-get install libz-dev
+
+### Others
+sudo apt-get install g++ libz-dev libz-dev
 sudo pecl install grpc
 
-Add this line to your php.ini file, e.g. /etc/php/7.2/apache2/php.ini and /etc/php/7.2/cli/php.ini
+
+## PHP.INI
+
+In your php.ini file located in /etc/php/7.2/apache2/php.ini and /etc/php/7.2/cli/php.ini
+
+Append the following line:
 
 extension=grpc.so
 
+
+## Composer
+
 composer require "grpc/grpc:^v1.1.0"
-
 composer require google/cloud-firestore
-
 composer require kreait/firebase-php ^4.16.0
+
+## Configuration
+
+Write your database configurations in .env file
+Run: php artisian migrate
+
 

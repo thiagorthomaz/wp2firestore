@@ -14,6 +14,7 @@ class CreateWfCategories extends Migration
     public function up()
     {
         Schema::create('wf_categories', function (Blueprint $table) {
+          $table->integer('id');
           $table->primary('id');
           $table->softDeletes();
           $table->timestamps();

@@ -146,7 +146,7 @@ class PostServiceProvider {
   }
   
   public function updateFromWordPress() {
-    $posts = DB::select("SELECT * FROM wp2firestore.wf_posts wfp
+    $posts = DB::select("SELECT * FROM wf_posts wfp
             join wp_posts wp
                 on wp.ID = wfp.id
             where wp.post_modified > wfp.updated_at");
