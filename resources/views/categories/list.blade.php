@@ -20,6 +20,9 @@
 
 </style>
 
+<button type="button" id="syncWithFirestore" class="btn btn-block btn-primary">Sync with Firestore</button>
+
+
 <table class="table table-bordered">
     <tbody>
     <tr>
@@ -59,6 +62,21 @@
         
         $.ajax({
           url: "import/"+ _id,
+          context: document.body
+        }).done(function() {
+          //alert("Imported");
+        });
+        
+        
+      });
+      
+      $("#syncWithFirestore").click(function() {
+        
+        var _id = $(this).attr("id");
+        console.log(_id);
+        
+        $.ajax({
+          url: "syncWithFirestore",
           context: document.body
         }).done(function() {
           //alert("Imported");

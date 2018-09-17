@@ -14,8 +14,7 @@ class WPCategoriesController extends Controller {
   
   
   public static function show() {
-        
-      
+
     $taxonomy_provider = new TaxonomyServiceprovider();
     $categories = $taxonomy_provider->loadCategoriesFromWP();
     
@@ -27,8 +26,6 @@ class WPCategoriesController extends Controller {
 
     );
   }
-    
-
 
   public function import($categoryId) {
     $delete = false;
@@ -37,9 +34,14 @@ class WPCategoriesController extends Controller {
     $salved = $taxonomy_provider->importCategory($categoryId, $delete);
     var_dump($salved);
     
-    
-    
   }
   
+  
+  public function syncWithFirestore() {
+    $taxonomy_provider = new TaxonomyServiceprovider();
+    $taxonomy_provider->syncWithFirestore();
+    echo json_encode(array("response" => "synced"));
+    
+  }
   
 }
