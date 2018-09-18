@@ -81,6 +81,16 @@ class TaxonomyServiceprovider {
     return DB::select('SELECT * from wf_categories where deleted_at is null');
   }
   
+  public function categoriesByPost($post_id) {
+    return DB::select('SELECT wt.* FROM wp_term_relationships wtr
+      join wf_categories wfc
+          on wfc.id = wtr.term_taxonomy_id
+      join wp_terms wt
+          on wt.term_id = wtr.term_taxonomy_id
+      where wtr.object_id = ?', [$post_id]);
+
+  }
+  
   
   
 }

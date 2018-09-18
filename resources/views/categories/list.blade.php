@@ -79,7 +79,7 @@
           url: "syncWithFirestore",
           context: document.body
         }).done(function() {
-          //alert("Imported");
+          alert("Synced");
         });
         
         

@@ -149,7 +149,7 @@ class PostServiceProvider {
     
   }
   
-  public function updateFromWordPress() {
+  public function updateFromWordPress($force_update = false) {
     $posts = DB::select("SELECT * FROM wf_posts wfp
             join wp_posts wp
                 on wp.ID = wfp.id
@@ -162,7 +162,17 @@ class PostServiceProvider {
   }
   
   private function sendFromWP2FS($post){
-      
+    
+    $wp_categories = new TaxonomyServiceprovider();
+    $categories = $wp_categories->categoriesByPost($post->ID);
+    $categories_list = array();
+    
+    foreach ($categories as $cat) {
+      $categories_list[] = $cat->term_id;
+    }
+
+    $post->post_categories = $categories_list;
+    
     $firestore = new FirestoreClient();
     $collectionReference = $firestore->collection("posts");
     
@@ -176,7 +186,7 @@ class PostServiceProvider {
     $post->featured_image = $this->loadFeaturedImage($post->ID);
     $documentReference = $collectionReference->document( $post->ID);
     $documentReference->set((array)$post);
-    
+        
   }
   
   public function delete($post_id){
