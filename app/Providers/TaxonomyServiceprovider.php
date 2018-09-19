@@ -56,7 +56,7 @@ class TaxonomyServiceprovider {
     foreach ($categories as $cat) {
       $wf_category = \App\Models\WFCategory::find($cat->id);
       $category = \App\Models\WPTerms::find($cat->id);
-
+      
       if (is_null($cat->deleted_at)) {
         $collectionReference = $firestore->collection("categories");
         $documentReference = $collectionReference->document( $wf_category->id);
@@ -65,10 +65,10 @@ class TaxonomyServiceprovider {
             'name' => $category->name, 
             'slug' => $category->slug 
         ));
-        $category->imported_at = date("Y-m-d H:i:s");
+        $wf_category->imported_at = date("Y-m-d H:i:s");
       } else {
         $collectionReference = $firestore->collection("categories")->document($wf_category->id)->delete();        
-        $category->imported_at = null;
+        $wf_category->imported_at = null;
       }
       
       $wf_category->save();
