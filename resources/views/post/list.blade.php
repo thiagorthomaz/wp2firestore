@@ -20,7 +20,7 @@
 
 
 @if ($post_type === "wordpress")
-  <button type="button" id="importFromWP" class="btn btn-block btn-primary">Import</button>
+  <button type="button" id="sync" class="btn btn-block btn-primary">Sync</button>
 @endif
 
 @if (count($posts) == 0)
@@ -72,13 +72,13 @@
 @section('js')
     <script> 
       
-      $("#importFromWP").click(function() {
+      $("#sync").click(function() {
         
         $.ajax({
-          url: "import",
+          url: "sync",
           context: document.body
         }).done(function() {
-          alert("Imported");
+          alert("Synced");
         });
         
       });

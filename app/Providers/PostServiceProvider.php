@@ -111,11 +111,14 @@ class PostServiceProvider {
 
   }
 
-  public function importFromWordPress() {
+  public function syncWithFirestore() {
     
     $taxonomy = new TaxonomyServiceprovider();
     $categories = $taxonomy->loadCategoriesToImport();
     $posts = array();
+    
+    $post_to_delete = $this->unsyncPosts();
+    
     
     foreach ($categories as $cat) {
       $posts_to_import = $this->loadNotImportedFromWordPress($cat->id);
@@ -197,6 +200,21 @@ class PostServiceProvider {
     $firestore = new FirestoreClient();
     $collectionReference = $firestore->collection("posts")->document($post_id)->delete();
     $post->save();
+    
+  }
+  
+  public function unsyncPosts() {
+    $posts = DB::select('SELECT distinct wp.* FROM 
+      wf_categories wfc
+      join wp_term_relationships wtr
+          on wtr.term_taxonomy_id = wfc.id
+      join wp_posts wp
+              on wp.ID = wtr.object_id
+      where wfc.deleted_at is not null');
+    
+    foreach ($posts as $post) {
+      $this->delete($post->ID);
+    }
     
   }
   

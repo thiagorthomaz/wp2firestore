@@ -35,11 +35,11 @@ class WPPostController extends Controller
       );
     }
     
-    public static function import()
+    public static function sync()
     {
       $post_provider = new PostServiceProvider();
-      $post_provider->importFromWordPress();
-      echo json_encode(array("response" => "imported"));
+      $post_provider->syncWithFirestore();
+      echo json_encode(array("response" => "Synced"));
     }
     
     public static function update()
