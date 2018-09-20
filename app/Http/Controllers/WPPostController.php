@@ -29,26 +29,23 @@ class WPPostController extends Controller
               'posts' => $posts,
               'categories' => $categories,
               'post_type' => 'wordpress',
-              'title' => 'Posts Wordpress'
+              'title' => 'Posts Wordpress',
+              'categoryId' => $categoryId
           ]
 
       );
     }
     
-    public static function sync()
+    public static function sync($categoryId = null)
     {
       $post_provider = new PostServiceProvider();
-      $post_provider->syncWithFirestore();
+      if (is_null($categoryId)) {
+        $post_provider->syncWithFirestore();  
+      } else {
+        $post_provider->syncWithFirestoreByCategory($categoryId);
+      }
+      
       echo json_encode(array("response" => "Synced"));
     }
-    
-    public static function update()
-    {
-      $post_provider = new PostServiceProvider();
-      $post_provider->updateFromWordPress();
-      echo json_encode(array("response" => "updated"));
-
-    }
-    
     
 }

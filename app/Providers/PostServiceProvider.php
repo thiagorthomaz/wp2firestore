@@ -93,7 +93,7 @@ class PostServiceProvider {
           on wtr.term_taxonomy_id = wt.term_id
       join wp_posts wp
           on wp.ID = wtr.object_id
-      where wp.ID not in (SELECT id FROM wf_posts) and wp.post_type="post"');  
+      where wp.post_type="post"');  
     } else {
       $posts = DB::select('SELECT distinct wp.* FROM wp_term_relationships wtr
       join wf_categories wfc
@@ -102,7 +102,7 @@ class PostServiceProvider {
           on wtr.term_taxonomy_id = wt.term_id
       join wp_posts wp
           on wp.ID = wtr.object_id
-      where wp.ID not in (SELECT id FROM wf_posts) and wp.post_type="post"
+      where wp.post_type="post"
       and wt.term_id = ?', [$categoryID]);  
     }
     
@@ -111,6 +111,15 @@ class PostServiceProvider {
 
   }
 
+  public function syncWithFirestoreByCategory($categoryId) {
+
+    $posts_to_import = $this->loadNotImportedFromWordPress($categoryId);
+    foreach ($posts_to_import as $post) {
+      $this->sendFromWP2FS($post);
+    }
+
+  }
+  
   public function syncWithFirestore() {
     
     $taxonomy = new TaxonomyServiceprovider();
@@ -118,7 +127,6 @@ class PostServiceProvider {
     $posts = array();
     
     $post_to_delete = $this->unsyncPosts();
-    
     
     foreach ($categories as $cat) {
       $posts_to_import = $this->loadNotImportedFromWordPress($cat->id);
@@ -152,18 +160,6 @@ class PostServiceProvider {
     
   }
   
-  public function updateFromWordPress($force_update = false) {
-    $posts = DB::select("SELECT * FROM wf_posts wfp
-            join wp_posts wp
-                on wp.ID = wfp.id
-            where wp.post_modified > wfp.updated_at");
-    
-    foreach ($posts as $post) {
-      $this->sendFromWP2FS($post);
-    }
-
-  }
-  
   private function sendFromWP2FS($post){
     
     $wp_categories = new TaxonomyServiceprovider();
@@ -179,10 +175,16 @@ class PostServiceProvider {
     $firestore = new FirestoreClient();
     $collectionReference = $firestore->collection("posts");
     
-    $wf_post = new WFPost();
-    $wf_post->id = $post->ID;
+    $wf_post = \App\Models\WFPost::find($post->ID);
+    
+    if (!$wf_post) {
+      $wf_post = new WFPost();
+      $wf_post->id = $post->ID;  
+    }
+    
     $wf_post->created_at = $post->post_date;
     $wf_post->updated_at = $post->post_modified;
+    $wf_post->deleted_at = null;
     $wf_post->save();
 
     $post->created_at = date("Y-m-d H:i:s");
@@ -195,11 +197,14 @@ class PostServiceProvider {
   public function delete($post_id){
    
     $post = \App\Models\WFPost::find($post_id);
-    $post->deleted_at = date("Y-m-d H:i:s");
+    if ($post) {
+      $post->deleted_at = date("Y-m-d H:i:s");
     
-    $firestore = new FirestoreClient();
-    $collectionReference = $firestore->collection("posts")->document($post_id)->delete();
-    $post->save();
+      $firestore = new FirestoreClient();
+      $collectionReference = $firestore->collection("posts")->document($post_id)->delete();
+      $post->save();
+    }
+    
     
   }
   

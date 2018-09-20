@@ -21,8 +21,7 @@ Route::get('/', function () {
 Route::get('/', 'WPAdminController@show');
 Route::get('wp/admin', 'WPAdminController@show');
 Route::get('wp/posts/list/{categoryId?}', 'WPPostController@show');
-Route::get('wp/posts/sync/', 'WPPostController@sync');
-Route::get('wp/posts/update/', 'WPPostController@update');
+Route::get('wp/posts/sync/{categoryId?}', 'WPPostController@sync');
 Route::get('wp/categories/list', 'WPCategoriesController@show');
 Route::get('wp/categories/import/{categoryId}', 'WPCategoriesController@import');
 Route::get('wp/categories/syncWithFirestore/', 'WPCategoriesController@syncWithFirestore');

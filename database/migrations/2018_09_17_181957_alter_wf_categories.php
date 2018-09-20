@@ -15,7 +15,7 @@ class AlterWfCategories extends Migration
     {
       if (!Schema::hasColumn('wf_categories', 'imported_at')) {
         Schema::table('wf_categories', function (Blueprint $table) {
-          $table->date('imported_at')->nullable();
+          $table->timestamp('imported_at')->nullable();
         });
       }
     }

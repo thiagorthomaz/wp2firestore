@@ -20,7 +20,7 @@
 
 
 @if ($post_type === "wordpress")
-  <button type="button" id="sync" class="btn btn-block btn-primary">Sync</button>
+  <a id="sync" class="btn btn-block btn-primary" href="{{ url('wp/posts/sync/') }}/{{$categoryId}}">Sync</a>
 @endif
 
 @if (count($posts) == 0)
@@ -74,12 +74,15 @@
       
       $("#sync").click(function() {
         
+        
         $.ajax({
-          url: "sync",
+          url: $(this).attr("href"),
           context: document.body
         }).done(function() {
           alert("Synced");
         });
+        
+        return false;
         
       });
       

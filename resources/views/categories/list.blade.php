@@ -40,7 +40,7 @@
             @endif
           </td>
           <td> <label for="{{ $cat->term_taxonomy_id }}">
-              <a href="{{ url('/wp/posts/list') }}/{{$cat->term_taxonomy_id}}">{{ $cat->name }}</a>
+              <a href="{{ url('/wp/posts/list') }}/{{$cat->term_id}}">{{ $cat->name }}</a>
             </label> </td>
         </tr>
     @endforeach

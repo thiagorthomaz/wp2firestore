@@ -36,6 +36,7 @@ class TaxonomyServiceprovider {
     } else {
       if (is_null($category_model->deleted_at)) {
         $category_model->deleted_at = date("Y-m-d H:i:s");  
+        $category_model->imported_at = null;  
       } else {
         $category_model->deleted_at = null;
       }
@@ -89,6 +90,10 @@ class TaxonomyServiceprovider {
           on wt.term_id = wtr.term_taxonomy_id
       where wtr.object_id = ?', [$post_id]);
 
+  }
+  
+  public function loadCategory($categoryId){
+    return \App\Models\WFCategory::find($categoryId);
   }
   
   
