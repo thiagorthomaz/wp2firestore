@@ -83,12 +83,16 @@ class TaxonomyServiceprovider {
   }
   
   public function categoriesByPost($post_id) {
-    return DB::select('SELECT wt.* FROM wp_term_relationships wtr
-      join wf_categories wfc
-          on wfc.id = wtr.term_taxonomy_id
-      join wp_terms wt
-          on wt.term_id = wtr.term_taxonomy_id
-      where wtr.object_id = ?', [$post_id]);
+
+    return DB::select('select wt.* from wp_terms wt
+    join wp_term_taxonomy wtt
+        on wtt.term_id = wt.term_id
+    join wp_term_relationships wtr
+            on wtr.term_taxonomy_id = wtt.term_taxonomy_id
+    join wp_posts wp
+            on wp.ID = wtr.object_id
+    where wp.ID = ?
+    order by wp.post_date desc', [$post_id]);
 
   }
   

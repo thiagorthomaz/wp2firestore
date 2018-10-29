@@ -61,7 +61,8 @@ class PostServiceProvider {
       on wp.ID = wtr.object_id
     left join wf_posts wf
         on wf.id = wp.ID
-    where post_status="publish" and wt.term_id in (select wc.id from wf_categories wc)');
+    where post_status="publish" and wt.term_id in (select wc.id from wf_categories wc)
+    order by wp.post_date desc');
     
     return $posts;
 
@@ -76,7 +77,8 @@ class PostServiceProvider {
       on wp.ID = wtr.object_id
     left join wf_posts wf
         on wf.id = wp.ID
-    where wt.term_id = ?', [$categoryID]);
+    where wt.term_id = ?
+    order by wp.post_date desc', [$categoryID]);
     
     
     return $posts;
@@ -86,26 +88,30 @@ class PostServiceProvider {
   public function loadNotImportedFromWordPress($categoryID = null) {
     
     if (is_null($categoryID)) {
-      $posts = DB::select('SELECT distinct wp.* FROM wp_term_relationships wtr
-      join wf_categories wfc
-        on wfc.id = wtr.term_taxonomy_id
-      join wp_terms wt
-          on wtr.term_taxonomy_id = wt.term_id
+      
+      $posts = DB::select('select distinct wp.* from wp_terms wt
+      join wp_term_taxonomy wtt
+          on wtt.term_id = wt.term_id
+      join wp_term_relationships wtr
+              on wtr.term_taxonomy_id = wtt.term_taxonomy_id
       join wp_posts wp
-          on wp.ID = wtr.object_id
-      where wp.post_type="post"');  
-    } else {
-      $posts = DB::select('SELECT distinct wp.* FROM wp_term_relationships wtr
-      join wf_categories wfc
-        on wfc.id = wtr.term_taxonomy_id
-      join wp_terms wt
-          on wtr.term_taxonomy_id = wt.term_id
-      join wp_posts wp
-          on wp.ID = wtr.object_id
+              on wp.ID = wtr.object_id
       where wp.post_type="post"
-      and wt.term_id = ?', [$categoryID]);  
+      order by wp.post_date desc');  
+      
+    } else {
+      $posts = DB::select('select distinct wp.* from wp_terms wt
+      join wp_term_taxonomy wtt
+          on wtt.term_id = wt.term_id
+      join wp_term_relationships wtr
+              on wtr.term_taxonomy_id = wtt.term_taxonomy_id
+      join wp_posts wp
+              on wp.ID = wtr.object_id
+      where wt.term_id = ?
+      order by wp.post_date desc', [$categoryID]);  
+      
+
     }
-    
     
     return $posts;
 
@@ -124,6 +130,7 @@ class PostServiceProvider {
     
     $taxonomy = new TaxonomyServiceprovider();
     $categories = $taxonomy->loadCategoriesToImport();
+    
     $posts = array();
     
     $post_to_delete = $this->unsyncPosts();
