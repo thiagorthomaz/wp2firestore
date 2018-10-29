@@ -1,4 +1,4 @@
-# WP2FS
+# WP2FS - Wordpress to Firestore
 
 #### Send your Wordpress post blog to your Firestore database
 
