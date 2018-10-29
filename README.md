@@ -1,7 +1,8 @@
-# wp2firestore
+# WP2FS
 
-My goal here is to create a middleware to publish my wordpress posts into a Firestore database that I'm using on an Ionic mobile project
+#### Send your Wordpress post blog to your Firestore database
 
+My goal here is to create a middleware to publish my wordpress posts into a Firestore database that I'm using on an Ionic mobile project.
 
 
 ## Dependencies
@@ -34,5 +35,14 @@ composer require kreait/firebase-php ^4.16.0
 
 Write your database configurations in .env file
 Run: php artisian migrate
+
+Create a firestore_credentials.json in your root folder and paste your google credential.
+
+Now just edit your .env file to include your credentials.
+GOOGLE_APPLICATION_CREDENTIALS=/var/www/html/wp2firestore/firestore_credentials.json
+
+
+
+
 
 
